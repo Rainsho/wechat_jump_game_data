@@ -18,8 +18,8 @@ function generateRandomList(score) {
 }
 
 function capacityTimes(score) {
-  if (score > 2 ** 32 - 1) return 8;
-  return ~~((score).toString(2).length / 4);
+  const t = Math.sqrt(score / 10);
+  return t > 8 ? 8 : t;
 }
 
 module.exports = { generateRandomList };

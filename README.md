@@ -12,7 +12,7 @@
 $ npm install
 ```
 
-生成数据比提交微信后台：
+生成数据并提交微信后台：
 
 ```bash
 $ npm start
