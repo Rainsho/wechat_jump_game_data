@@ -1,0 +1,14 @@
+{
+  "name": "wechat_jump_game_data",
+  "version": "1.0.0",
+  "description": "Auto generate wechat_jump_game mock data and post it.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rainsho",
+  "license": "ISC",
+  "dependencies": {
+    "superagent": "3.8.2"
+  }
+}
