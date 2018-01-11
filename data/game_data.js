@@ -300,4 +300,4 @@ const game_data = {
   version: 2,
 };
 
-export { game_data };
+module.exports = { game_data };
