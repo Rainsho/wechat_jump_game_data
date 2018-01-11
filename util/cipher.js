@@ -13,9 +13,11 @@ const defaultKey = config.session_id.substr(0, 16);
  * @param {string} key 
  */
 function encrypt(data, key = defaultKey) {
-    const cipher = crypto.createCipheriv(algorithm, key, key);
-    cipher.update(data, dataEncoding, cipherEncoding);
-    return cipher.final(cipherEncoding);
+  const chunks = [];
+  const cipher = crypto.createCipheriv(algorithm, key, key);
+  chunks.push(cipher.update(data, dataEncoding, cipherEncoding));
+  chunks.push(cipher.final(cipherEncoding))
+  return chunks.join('');
 }
 
 module.exports = { encrypt };
