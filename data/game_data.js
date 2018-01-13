@@ -300,4 +300,19 @@ const game_data = {
   version: 2,
 };
 
-module.exports = { game_data };
+const fs = require('fs');
+const session_id = fs.readFileSync('.sessiondata', { encoding: 'utf8' });
+const rawdata = fs.readFileSync('.rawdata', { encoding: 'utf8' });
+const { decrypt } = require('../util/cipher');
+let new_data = null;
+try {
+  new_data = JSON.parse(decrypt(rawdata, session_id));
+  new_data = JSON.parse(new_data.game_data);
+  // console.info('new_data has a length of ', new_data.action.length);
+} catch (e) {
+  new_data = null;
+  console.info(e);
+}
+if (!new_data) new_data = game_data;
+
+module.exports = { game_data: new_data };

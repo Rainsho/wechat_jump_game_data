@@ -3,7 +3,7 @@ const { header } = require('./config');
 const { mockInitData, mockReqData } = require('./util/mockdata');
 
 const fs = require('fs');
-const session_id = fs.readFileSync('.testdata', { encoding: 'utf8' });
+const session_id = fs.readFileSync('.sessiondata', { encoding: 'utf8' });
 
 const SCORE_URL = 'https://mp.weixin.qq.com/wxagame/wxagame_getfriendsscore';
 const URL = 'https://mp.weixin.qq.com/wxagame/wxagame_settlement';
@@ -27,10 +27,13 @@ function sendScore(times) {
   const reqData = score
     ? mockReqData(times, ~~score, { session_id })
     : mockReqData(times);
+  const reqStr = JSON.stringify(reqData);
+  const bakFile = `./__test__/${new Date().toISOString().substr(0, 19)}.bak`;
+  fs.writeFile(bakFile, reqStr, 'utf8', onErr);
   return request
     .post(URL)
     .set(header)
-    .send(JSON.stringify(reqData));
+    .send(reqStr);
 }
 
 /**
@@ -74,6 +77,10 @@ function check() {
 function send(times) {
   return sendScore(times)
     .then(parseScoreRes);
+}
+
+function onErr(err) {
+  err && console.info(err);
 }
 
 process.argv[3] === 'c' ? check() : start();
