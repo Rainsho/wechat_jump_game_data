@@ -5,9 +5,9 @@ const config = {
   // 游戏用常量
   PER_REST: 15,
   TIME_PADDING: 3000,
-  REST_TIME: 5000,
-  ACTION_TIME_MIN: 500,
-  ACTION_TIME_MAX: 1500,
+  REST_TIME: 12000,
+  ACTION_TIME_MIN: 2000,
+  ACTION_TIME_MAX: 4500,
 };
 
 const header = {

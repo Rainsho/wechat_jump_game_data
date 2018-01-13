@@ -8,6 +8,9 @@ const cipherEncoding = 'base64';
 const defaultKey = config.session_id.substr(0, 16);
 
 /**
+ * 目前 action_data 的加密方式为
+ * 使用 aes-128-cbc 模式加密
+ * 密码及偏移量同位 session_id 前 16 位
  * 
  * @param {string} data 
  * @param {string} key 
