@@ -1,5 +1,5 @@
 const request = require('superagent');
-const { config, header } = require('./config');
+const { header } = require('./config');
 const { mockInitData, mockReqData } = require('./util/mockdata');
 
 const fs = require('fs');

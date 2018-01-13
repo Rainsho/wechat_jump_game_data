@@ -33,7 +33,7 @@ function mockReqData(times, score = config.score, { session_id } = config) {
   console.log(`准备构造第 ${times} 次游戏 ${score} 分的请求数据`);
   const fast = 1;
   const mockData = mockActionData(times, score);
-  const action_data = encrypt(JSON.stringify(mockData));
+  const action_data = encrypt(JSON.stringify(mockData), session_id);
   const base_req = { session_id, fast };
   return { base_req, action_data };
 }
