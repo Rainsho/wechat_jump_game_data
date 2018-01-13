@@ -5,7 +5,7 @@ const { config } = require('../config');
 const { game_data } = require('../data/game_data');
 
 const {
-    PER_REST,
+  PER_REST,
   TIME_PADDING,
   REST_TIME,
   ACTION_TIME_MIN,

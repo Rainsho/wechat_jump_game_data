@@ -1,8 +1,6 @@
 const config = {
-  session_id: 'TQ2KU93/yUK+2HMM9ilwP6fC/JXSdetZnwWXtX97nq9W1UIT8n0lbwWm'
-    + 'cixYmoAMIKlj/+KdZNaUaacjkQ9i562LJFYVL1SP/uDFAEfVioDVUk/XQx9D/UE'
-    + 'xLmTFtC9Xe+PCdtG8XLjk8dMgEIPa/g==',
-  score: 200,
+  session_id: 'rNInWtK0z3vvRv4iowIH7lfQtsqrbk5UVNPuby54EBu5QREZNN7Q+h+2e/AsQyTvtxwWgGfMnwsEWeXLxkAcld9aayjRJXlnAUJFCUshtNDURdTPVU/YP3cFviXB0w7PXvTwBRFscWn113UpnbFJBg==',
+  score: 42,
 
   // 游戏用常量
   PER_REST: 15,
