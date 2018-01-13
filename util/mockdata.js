@@ -2,7 +2,7 @@ const { random } = require('lodash');
 const { encrypt } = require('./cipher');
 const { generateRandomList } = require('./random');
 const { config } = require('../config');
-const { game_data } = require('../data/game_data');
+const { datas, game_data } = require('../data/game_data');
 
 const {
   PER_REST,
@@ -51,8 +51,13 @@ function mockReqData(times, score = config.score, { session_id } = config) {
  * }
  */
 function mockActionData(times, score) {
-  const game_data = JSON.stringify(mockGameData(score));
-  return { game_data, score, times };
+  const game_data = datas[score]
+    || datas[score + 1]
+    || datas[score - 1]
+    || datas[score + 2]
+    || datas[score - 2]
+    || JSON.stringify(mockGameData(score));
+  return { score, times, game_data };
 }
 
 /**
@@ -62,23 +67,28 @@ function mockActionData(times, score) {
  * 
  * type GameData {
  *   seed: number     // 由 timestamp[0] 减去偏移量反推
- *   version: number  // 2
  *   action: Array    // 从 game_data 中乱序复制
  *   musicList: Array // 从 game_data 中乱序复制
+ *   touchList: Array // 从 game_data 中乱序复制
  *   steps: Array     // 从 game_data 中乱序复制
  *   timestamp: Array // 由当前时间减去偏移量反推
- *   touchList: Array // 从 game_data 中乱序复制
+ *   version: number  // 2
  * }
  */
 function mockGameData(score) {
-  const data = { version: 2 };
-  const toCopy = ['action', 'musicList', 'steps', 'touchList'];
+  const tObject = {};
+  const toCopy = ['action', 'musicList', 'touchList', 'steps'];
   const indexList = generateRandomList(score);
   for (const key of toCopy) {
-    data[key] = copyList(game_data[key], indexList);
+    tObject[key] = copyList(game_data[key], indexList);
   }
-  data.timestamp = generateTimestamp(indexList.length);
-  data.seed = data.timestamp[0] - random(ACTION_TIME_MIN, ACTION_TIME_MAX);
+
+  const version = 2;
+  const timestamp = generateTimestamp(indexList.length);
+  const seed = timestamp[0] - random(ACTION_TIME_MIN, ACTION_TIME_MAX);
+
+  // 保持 stringify 顺序
+  const data = Object.assign({ seed }, tObject, { timestamp, version });
   return data;
 }
 
