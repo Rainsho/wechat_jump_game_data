@@ -15,8 +15,7 @@ const {
 /**
  * 
  */
-function mockInitData() {
-  const { session_id } = config;
+function mockInitData({ session_id } = config) {
   const fast = 1;
   return { base_req: { session_id, fast } };
 }
@@ -27,7 +26,8 @@ function mockInitData() {
  * @param {string} session_id 
  * @param {number} score 
  */
-function mockReqData(times, { session_id, score } = config) {
+function mockReqData(times, score = config.score, { session_id } = config) {
+  console.log(`准备构造第 ${times} 次游戏 ${score} 分的请求数据`);
   const fast = 1;
   const mockData = mockActionData(score, times);
   const action_data = encrypt(JSON.stringify(mockData));

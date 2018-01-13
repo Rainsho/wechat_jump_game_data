@@ -14,8 +14,10 @@ function getInfos() {
 }
 
 function sendScore(times) {
-  console.log(`准备构造第 ${times} 次游戏请求数据`);
-  const reqData = mockReqData(times);
+  const score = process.argv[2];
+  const reqData = score
+    ? mockReqData(times, ~~score)
+    : mockReqData(times);
   return request
     .post(URL)
     .set(header)
@@ -44,16 +46,19 @@ function parseScoreRes(res) {
 }
 
 function start() {
-  return getInfos()
-    .then(parseInfos)
-    .then(sendScore)
-    .then(parseScoreRes)
+  return check()
+    .then(send)
     .then(check);
 }
 
 function check() {
   return getInfos()
     .then(parseInfos);
+}
+
+function send(times) {
+  return sendScore(times)
+    .then(parseScoreRes);
 }
 
 start();
