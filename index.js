@@ -34,12 +34,10 @@ function sendScore(times) {
     ? mockReqData(times, ~~score, session_id)
     : mockReqData(times);
   const reqStr = JSON.stringify(reqData);
-  const bakFile = `./__test__/${
-    new Date()
-      .toISOString()
-      .substr(0, 19)
-      .replace(/\D/g, '')
-    }.bak`;
+  const bakFile = `./__test__/${new Date()
+    .toISOString()
+    .substr(0, 19)
+    .replace(/\D/g, '')}.bak`;
   fs.writeFile(bakFile, reqStr, 'utf8', onErr);
   return request
     .post(URL)
@@ -81,13 +79,11 @@ function start() {
 }
 
 function check() {
-  return getInfos()
-    .then(parseInfos);
+  return getInfos().then(parseInfos);
 }
 
 function send(times) {
-  return sendScore(times)
-    .then(parseScoreRes);
+  return sendScore(times).then(parseScoreRes);
 }
 
 function onErr(err) {
