@@ -3,8 +3,8 @@ const { game_data } = require('../data/game_data');
 
 /**
  * 生成乱序集合
- * 
- * @param {number} score 
+ *
+ * @param {number} score
  */
 function generateRandomList(score) {
   // 样本数据容量
@@ -26,8 +26,8 @@ function generateRandomList(score) {
 
 /**
  * 依据当前分数生成跳跃次数
- * 
- * @param {number} score 
+ *
+ * @param {number} score
  */
 function calcCapacity(score) {
   const t = Math.min(Math.sqrt(score / 10), 8);
