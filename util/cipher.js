@@ -1,11 +1,8 @@
 const crypto = require('crypto');
-const { config } = require('../config');
 
 const algorithm = 'aes-128-cbc';
 const dataEncoding = 'gb2312';
 const cipherEncoding = 'base64';
-
-const defaultKey = config.session_id.substr(0, 16);
 
 /**
  * 目前 action_data 的加密方式为
@@ -15,7 +12,8 @@ const defaultKey = config.session_id.substr(0, 16);
  * @param {string} data 
  * @param {string} key 
  */
-function encrypt(data, key = defaultKey) {
+function encrypt(data, session_id) {
+  const key = session_id.substr(0, 16);
   const chunks = [];
   const cipher = crypto.createCipheriv(algorithm, key, key);
   chunks.push(cipher.update(data, dataEncoding, cipherEncoding));
@@ -23,4 +21,13 @@ function encrypt(data, key = defaultKey) {
   return chunks.join('');
 }
 
-module.exports = { encrypt };
+function decrypt(data, session_id) {
+  const key = session_id.substr(0, 16);
+  const chunks = [];
+  const decipher = crypto.createDecipheriv(algorithm, key, key);
+  chunks.push(decipher.update(data, cipherEncoding, 'utf8'));
+  chunks.push(decipher.final('utf8'));
+  return chunks.join('');
+}
+
+module.exports = { encrypt, decrypt };

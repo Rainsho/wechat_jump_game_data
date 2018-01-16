@@ -1,5 +1,4 @@
 const { shuffle, range } = require('lodash');
-const { config } = require('../config');
 const { game_data } = require('../data/game_data');
 
 /**

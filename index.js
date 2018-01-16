@@ -1,6 +1,15 @@
 const request = require('superagent');
-const { config, header } = require('./config');
+const { header } = require('./config');
 const { mockInitData, mockReqData } = require('./util/mockdata');
+
+const fs = require('fs');
+let session_id;
+try {
+  session_id = fs.readFileSync('.sessiondata', { encoding: 'utf8' });
+} catch (e) {
+  session_id = void 0;
+  onErr(e);
+}
 
 const SCORE_URL = 'https://mp.weixin.qq.com/wxagame/wxagame_getfriendsscore';
 const URL = 'https://mp.weixin.qq.com/wxagame/wxagame_settlement';
@@ -9,7 +18,7 @@ const URL = 'https://mp.weixin.qq.com/wxagame/wxagame_settlement';
  * 请求 getfriendsscore 主要是为了拿到当前游戏次数和当前最高分
  */
 function getInfos() {
-  const initData = mockInitData();
+  const initData = mockInitData(session_id);
   return request
     .post(SCORE_URL)
     .set(header)
@@ -22,12 +31,20 @@ function getInfos() {
 function sendScore(times) {
   const score = process.argv[2];
   const reqData = score
-    ? mockReqData(times, ~~score)
+    ? mockReqData(times, ~~score, session_id)
     : mockReqData(times);
+  const reqStr = JSON.stringify(reqData);
+  const bakFile = `./__test__/${
+    new Date()
+      .toISOString()
+      .substr(0, 19)
+      .replace(/\D/g, '')
+    }.bak`;
+  fs.writeFile(bakFile, reqStr, 'utf8', onErr);
   return request
     .post(URL)
     .set(header)
-    .send(JSON.stringify(reqData));
+    .send(reqStr);
 }
 
 /**
@@ -73,5 +90,8 @@ function send(times) {
     .then(parseScoreRes);
 }
 
-start();
-// check();
+function onErr(err) {
+  err && console.info(err);
+}
+
+process.argv[3] === 'c' ? check() : start();
