@@ -56,12 +56,14 @@ function mockReqData(
  */
 function mockActionData(times, score) {
   const game_data =
-    datas[score] ||
-    datas[score + 1] ||
-    datas[score - 1] ||
-    datas[score + 2] ||
-    datas[score - 2] ||
-    JSON.stringify(mockGameData(score));
+    score > 993 && score < 1050
+      ? datas[995]
+      : datas[score] ||
+        datas[score + 1] ||
+        datas[score - 1] ||
+        datas[score + 2] ||
+        datas[score - 2] ||
+        JSON.stringify(mockGameData(score));
   return { score, times, game_data };
 }
 
