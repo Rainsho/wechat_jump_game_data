@@ -13,7 +13,7 @@
    3. 在管理页面，点击 `Https` 手机扫描二维码或使用浏览器输入对应地址，下载根证书
    4. 信任根证书后，勾选 `Intercept HTTPS CONNECTs`
    5. 进去游戏，任意 `/wxagame` 开头的请求在 `Request` 内即可看到 `session_id`
-3. 在 `config.js` 内填入 `session_id` 和想提交的分数 `score` (目前经验值是 10 - 999 为安全数据)
+3. 在 `config.js` 内填入 `session_id` 和想提交的分数 `score` (目前经验值是 10 - 1916 为安全数据)
 
 4. 安装依赖：
 

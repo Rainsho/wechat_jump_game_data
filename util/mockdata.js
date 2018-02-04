@@ -3,6 +3,7 @@ const { encrypt } = require('./cipher');
 const { generateRandomList } = require('./random');
 const { config } = require('../config');
 const { datas, game_data } = require('../data/game_data');
+const { findnear } = require('./findnear');
 
 const {
   PER_REST,
@@ -55,15 +56,16 @@ function mockReqData(
  * }
  */
 function mockActionData(times, score) {
+  const ref = findnear(
+    Object.keys(datas)
+      .map(x => parseInt(x))
+      .sort((a, b) => (a < b ? -1 : 1)),
+    score
+  );
   const game_data =
-    score > 993 && score < 1050
-      ? datas[995]
-      : datas[score] ||
-        datas[score + 1] ||
-        datas[score - 1] ||
-        datas[score + 2] ||
-        datas[score - 2] ||
-        JSON.stringify(mockGameData(score));
+    Math.abs(score - ref) < 50
+      ? datas[ref]
+      : JSON.stringify(mockGameData(score));
   return { score, times, game_data };
 }
 
