@@ -1,4 +1,5 @@
 const request = require('superagent');
+const { range } = require('lodash');
 const { header } = require('./config');
 const { mockInitData, mockReqData } = require('./util/mockdata');
 
@@ -28,8 +29,8 @@ function getInfos() {
 /**
  * 提交游戏分数
  */
-function sendScore(times) {
-  const score = process.argv[2];
+function sendScore(times, _score) {
+  const score = _score || process.argv[2];
   const reqData = score
     ? mockReqData(times, ~~score, session_id)
     : mockReqData(times);
@@ -81,4 +82,52 @@ function send(times) {
   return sendScore(times).then(parseScoreRes);
 }
 
-process.argv[3] === 'c' ? check() : start();
+const arg = process.argv[2];
+
+~~arg && start();
+
+arg === 'c' && check();
+
+const results = {};
+const cheaters = {};
+
+function test(score) {
+  if (!score) return;
+  return getInfos()
+    .then(res => res.body.my_user_info.times + 1)
+    .then(times => sendScore(times, score))
+    .then(res => {
+      const status = res.body.cheater_status;
+      (cheaters[status] || (cheaters[status] = [])).push(score);
+    })
+    .then(getInfos)
+    .then(res => {
+      const { my_user_info } = res.body;
+      const { week_best_score } = my_user_info;
+      // console.log(score, week_best_score === score);
+      const result = week_best_score === score;
+      (results[result] || (results[result] = [])).push(score);
+    });
+}
+
+arg === 't' &&
+  (function() {
+    const socres = range(2, 2020, 4);
+    const fn = () => {
+      const score = socres.shift();
+      if (!score) return console.log(results, cheaters);
+      test(score)
+        .then(
+          () =>
+            new Promise((res, rej) => {
+              setTimeout(res, 100);
+            })
+        )
+        .then(fn)
+        .catch(() => {
+          console.log(results, cheaters);
+        });
+    };
+
+    fn();
+  })();
