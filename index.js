@@ -8,7 +8,7 @@ try {
   session_id = fs.readFileSync('.sessiondata', { encoding: 'utf8' });
 } catch (e) {
   session_id = void 0;
-  onErr(e);
+  console.info(e);
 }
 
 const SCORE_URL = 'https://mp.weixin.qq.com/wxagame/wxagame_getfriendsscore';
@@ -34,11 +34,6 @@ function sendScore(times) {
     ? mockReqData(times, ~~score, session_id)
     : mockReqData(times);
   const reqStr = JSON.stringify(reqData);
-  const bakFile = `./__test__/${new Date()
-    .toISOString()
-    .substr(0, 19)
-    .replace(/\D/g, '')}.bak`;
-  fs.writeFile(bakFile, reqStr, 'utf8', onErr);
   return request
     .post(URL)
     .set(header)
@@ -84,10 +79,6 @@ function check() {
 
 function send(times) {
   return sendScore(times).then(parseScoreRes);
-}
-
-function onErr(err) {
-  err && console.info(err);
 }
 
 process.argv[3] === 'c' ? check() : start();
