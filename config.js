@@ -1,5 +1,5 @@
 const config = {
-  session_id: 'rNInWtK0z3vvRv4iowIH7lfQtsqrbk5UVNPuby54EBu5QREZNN7Q+h+2e/AsQyTvtxwWgGfMnwsEWeXLxkAcld9aayjRJXlnAUJFCUshtNDURdTPVU/YP3cFviXB0w7PXvTwBRFscWn113UpnbFJBg==',
+  session_id: '',
   score: 42,
 
   // 游戏用常量
