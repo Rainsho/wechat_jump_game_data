@@ -6,21 +6,21 @@ const { mockInitData, mockReqDataWithPlayBack } = require('./util/mockdata');
 const SCORE_URL = 'https://mp.weixin.qq.com/wxagame/wxagame_getfriendsscore';
 const URL = 'https://mp.weixin.qq.com/wxagame/wxagame_settlement';
 const PLAY_URL = 'https://mp.weixin.qq.com/wxagame/wxagame_playback';
-const SCORE_SHIFT = 1;
+const SCORE_SHIFT = -1;
 
 /**
  * 请求 getfriendsscore 主要是为了拿到当前游戏次数和当前最高分
  */
 function getInfos() {
-  const initData = mockInitData(session_id);
+  const initData = mockInitData();
   return request
     .post(SCORE_URL)
     .set(header)
     .send(JSON.stringify(initData));
 }
 
-function getPlayback({ playback_id, times, score }) {
-  const reqData = assign(mockInitData(session_id), {
+function getPlayback({ playback_id, times, score, nickname }) {
+  const reqData = assign(mockInitData(), {
     playback_id,
     action: 'weekly_rank',
   });
@@ -30,7 +30,7 @@ function getPlayback({ playback_id, times, score }) {
     .send(JSON.stringify(reqData))
     .then(res => {
       const { game_data } = res.body;
-      return { game_data, times, score };
+      return { game_data, times, score, nickname };
     });
 }
 
@@ -46,7 +46,6 @@ function sendScore({ game_data, times, score, nickname }) {
     game_data,
     times,
     score: score + SCORE_SHIFT,
-    session_id,
   });
   const reqStr = JSON.stringify(reqData);
   return request
@@ -76,7 +75,7 @@ function parseInfos(res) {
  * 解析 sendScore 请求
  */
 function parseScoreRes(res) {
-  console.info(res.body);
+  // console.info(res.body);
   if (res.body.base_resp.errcode !== 0) {
     console.log('服务器端发现异常');
     throw new Error('oops something went wrong...');

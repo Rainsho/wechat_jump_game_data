@@ -4,6 +4,8 @@
 
 更新 `game_data` 构造方法调整，若在 `./data/raw` 中存在已有真实数据，则不构造数据，直接使用之前的 `game_data` 加密后发送至服务器端(通过验证几率较高)，详见[实验结果](#实验结果)。
 
+新增 shadow 模式，使用排行榜第一名好友回放数据构造游戏数据，在此基础上将其分数增加 `SCORE_SHIFT` 作为自身分数提交服务器。
+
 ## 使用方法
 
 1. 安装 [node](https://github.com/nodejs/node) (建议安装 8.0 及以上版本)
@@ -25,6 +27,12 @@ $ npm install
 
 ```bash
 $ npm start
+```
+
+6. shadow 模式，使用排行榜第一名好友回放数据构造游戏数据，在此基础上将其分数增加 `SCORE_SHIFT` (默认为 -1)作为自身分数提交服务器。
+
+```bash
+$ npm run shadow
 ```
 
 ## TODO
