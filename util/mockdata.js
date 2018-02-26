@@ -130,4 +130,28 @@ function generateTimestamp(capacity) {
   return list;
 }
 
-module.exports = { mockInitData, mockReqData };
+function mockReqDataWithPlayBack({
+  times,
+  game_data,
+  score = config.score,
+  session_id = config.session_id,
+}) {
+  const fast = 1;
+  const mockData = { score, times, game_data: v3tov2(game_data) };
+  const action_data = encrypt(JSON.stringify(mockData), session_id);
+  const base_req = { session_id, fast };
+  return { base_req, action_data };
+}
+
+function v3tov2(game_data) {
+  const v2 = JSON.parse(game_data);
+  v2.version = 2;
+  v2.seed = v2.time_seed;
+  delete v2.mmpay_checksum;
+  delete v2.mmpay_status;
+  delete v2.use_mmpaybase;
+  delete v2.use_wangzhe;
+  return JSON.stringify(v2);
+}
+
+module.exports = { mockInitData, mockReqData, mockReqDataWithPlayBack };
