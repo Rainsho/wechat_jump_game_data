@@ -1,5 +1,6 @@
 const request = require('superagent');
-const { range, maxBy, assign, sortBy } = require('lodash');
+const { range, maxBy, assign, orderBy } = require('lodash');
+const readline = require('readline');
 const { header } = require('./config');
 const {
   mockInitData,
@@ -19,7 +20,7 @@ try {
 const SCORE_URL = 'https://mp.weixin.qq.com/wxagame/wxagame_getfriendsscore';
 const URL = 'https://mp.weixin.qq.com/wxagame/wxagame_settlement';
 const PLAY_URL = 'https://mp.weixin.qq.com/wxagame/wxagame_playback';
-const SCORE_SHIFT = 1;
+const SCORE_SHIFT = -1;
 
 /**
  * 请求 getfriendsscore 主要是为了拿到当前游戏次数和当前最高分
@@ -70,17 +71,45 @@ function sendScore({ game_data, times, score }) {
  * 解析 getInfos 请求
  */
 function parseInfos(res) {
-  const { user_info, my_user_info } = res.body;
-  if (user_info && user_info.length > 0) {
-    const no1 = maxBy(user_info, 'week_best_score');
-    // const no1 = sortBy(user_info, 'week_best_score')[2];
-    const { playback_id, week_best_score: score } = no1;
-    const times = my_user_info.times + 1;
-    // console.log(no1);
-    // console.info(my_user_info);
+  const { my_user_info } = res.body;
+  if (my_user_info) {
     console.log(`当前周最高分: ${my_user_info.week_best_score}`);
     console.log(`当前游戏次数: ${my_user_info.times}`);
-    return { playback_id, times, score };
+    return;
+  }
+  console.info('服务器端发现异常');
+  throw new Error('oops something went wrong...');
+}
+
+function parseFriendsInfo(res) {
+  const { user_info, my_user_info } = res.body;
+  if (user_info && user_info.length > 0) {
+    const ranks = orderBy(user_info, 'week_best_score', 'desc');
+    const q = ranks
+      .slice(0, 15)
+      .map((x, i) => `${i}  ${x.nickname}  ${x.week_best_score}`)
+      .join('\n');
+
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+
+    rl.question(`${q}\n请选择要模拟的好友(默认为0):`, answer => {
+      const no = parseInt(answer, 10) || 0;
+      const target = ranks[no] || ranks[0];
+      const { playback_id, week_best_score: score } = target;
+      const times = my_user_info.times + 1;
+
+      getPlayback({ playback_id, times, score })
+        .then(send)
+        .then(check)
+        .then(() => rl.close())
+        .catch(() => rl.close());
+    });
+
+    rl.on('close', () => process.exit(0));
+    return;
   }
   console.info('服务器端发现异常');
   throw new Error('oops something went wrong...');
@@ -90,19 +119,20 @@ function parseInfos(res) {
  * 解析 sendScore 请求
  */
 function parseScoreRes(res) {
-  console.info(res.body);
-  if (res.body.base_resp.errcode !== 0) {
+  // console.info(res.body);
+  const { base_resp: { errcode }, cheater_status } = res.body;
+  if (errcode !== 0) {
     console.log('服务器端发现异常');
     throw new Error('oops something went wrong...');
   }
-  console.log('成绩已成功提交至服务器');
+
+  cheater_status
+    ? console.log('成绩未被服务器接受 cheater_status:', cheater_status)
+    : console.log('成绩已成功提交至服务器');
 }
 
 function start() {
-  return check()
-    .then(getPlayback)
-    .then(send)
-    .then(check);
+  return getInfos().then(parseFriendsInfo);
 }
 
 function check() {

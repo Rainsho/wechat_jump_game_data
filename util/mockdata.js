@@ -148,6 +148,7 @@ function v3tov2(game_data) {
   const v2 = JSON.parse(game_data);
   v2.version = 2;
   v2.seed = v2.time_seed;
+  delete v2.time_seed;
   delete v2.mmpay_checksum;
   delete v2.mmpay_status;
   delete v2.use_mmpaybase;
