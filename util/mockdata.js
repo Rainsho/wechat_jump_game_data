@@ -85,6 +85,7 @@ function mockActionData(times, score) {
  * }
  */
 function mockGameData(score) {
+  console.info('mocking game data of', score);
   const tObject = {};
   const toCopy = ['action', 'musicList', 'touchList', 'steps'];
   const indexList = generateRandomList(score);
@@ -144,9 +145,21 @@ function mockReqDataWithPlayBack({
 }
 
 function v3tov2(game_data) {
+  if (!0) {
+    /**
+     * TODO
+     *
+     * 初步定位 cheater_status == 1
+     * 原因与游戏数据有关
+     * 选择于自身设备相近的好友通过率较大
+     */
+    return game_data;
+  }
+
   const v2 = JSON.parse(game_data);
   v2.version = 2;
-  v2.seed = v2.time_seed;
+  v2.time_seed && (v2.seed = v2.time_seed);
+  delete v2.time_seed;
   delete v2.mmpay_checksum;
   delete v2.mmpay_status;
   delete v2.use_mmpaybase;
