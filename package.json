@@ -11,7 +11,7 @@
   "author": "Rainsho",
   "license": "ISC",
   "dependencies": {
-    "lodash": "4.17.4",
-    "superagent": "3.8.2"
+    "lodash": "^4.17.14",
+    "superagent": "^3.8.2"
   }
 }

@@ -1,5 +1,7 @@
 # wechat_jump_game_data
 
+> @deprecate just for fun, for old times'
+
 微信跳一跳自动生成游戏数据，并发送请求。目前使用[样本数据](./data/game_data.js)构造 game_data 数据，按后台加密规则加密后发送请求。由于 **game_data 的后台验证机制暂不明朗**，存在请求提交正常但成绩未录入的情况(很无奈)。
 
 更新 `game_data` 构造方法调整，若在 `./data/raw` 中存在已有真实数据，则不构造数据，直接使用之前的 `game_data` 加密后发送至服务器端(通过验证几率较高)，详见[实验结果](#实验结果)。
